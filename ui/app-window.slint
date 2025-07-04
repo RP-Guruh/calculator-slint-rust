@@ -1,20 +1,86 @@
 import { Button, VerticalBox, LineEdit } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
+
+    title: "Calculator";
+
+    in-out property <string> expression;
+    in-out property <string> result;
+
+    callback append(string);
+    callback backspace();
+    callback calculate();
+
     in-out property <int> counter: 42;
     callback request-increase-value();
-    min-width: 300px;
-    min-height: 250px;
+    min-width: 260px;
+    min-height: 350px;
+ 
+    forward-focus: my-key-handler;
+    my-key-handler := FocusScope {
+        key-pressed(event) => {
+            if(event.text == "0" || event.text == "1" || event.text == "2" || event.text == "3" || event.text == "4" || event.text == "5" || event.text == "6" || event.text == "7" || event.text == "8" || event.text == "9" || event.text == "+" || event.text == "-" || event.text == "*" || event.text == "/") {
+                root.append(event.text);
+                debug("Key pressed: {}", event.text);
+            }
+            else if(event.text == "+" || event.text == "-" || event.text == "*" || event.text == "/") {
+                root.append(event.text);
+                debug("Key pressed: {}", event.text);
+            }
+            else if(event.text == Key.Return) {
+                root.calculate();
+            }
+            else if(event.text == Key.Backspace) {
+               root.backspace();
+            }
+            accept
+        }
+    }
+
     VerticalBox {
-        Text {
-            text: "5 + 6";
-            font-size: 10pt;
-            font-weight: 800;
+        VerticalLayout {
+            Text {
+                text: root.expression;
+                font-size: 12pt;
+                font-weight: 800;
+                height: 32px;        
+                overflow: elide;        
+                horizontal-alignment: right; 
+            }
+            spacing: 10px;
+        }
+        LineEdit {
+            text: "\{root.result}";
+            read-only: true;
+            font-size: 24pt;
         }
 
-        LineEdit {
-            text: "\{root.counter}";
-            read-only: true;
+        HorizontalLayout {
+            spacing: 10px;
+            Button {
+                text: "CE";
+                primary: true;
+                clicked => {
+                    root.expression = "";
+                    root.result = "";
+                }
+            }
+
+            Button {
+                text: "C";
+                primary: true;
+                clicked => {
+                    root.backspace();
+                }
+            }
+
+            Button {
+                text: "⌫";
+                primary: true;
+                clicked => {
+                    root.backspace();
+                }
+            }
         }
 
         HorizontalLayout {
@@ -22,18 +88,31 @@ export component AppWindow inherits Window {
             spacing: 10px;
             Button {
                 text: "7";
+                clicked => {
+                    root.append("7");
+                }
             }
 
             Button {
                 text: "8";
+                clicked => {
+                    root.append("8");
+                }
             }
 
             Button {
                 text: "9";
+                clicked => {
+                    root.append("9");
+                }
             }
 
             Button {
                 text: "x";
+                primary: true;
+                clicked => {
+                    root.append("*");
+                }
             }
         }
 
@@ -41,18 +120,31 @@ export component AppWindow inherits Window {
             spacing: 10px;
             Button {
                 text: "4";
+                clicked => {
+                    root.append("4");
+                }
             }
 
             Button {
                 text: "5";
+                clicked => {
+                    root.append("5");
+                }
             }
 
             Button {
                 text: "6";
+                clicked => {
+                    root.append("6");
+                }
             }
 
             Button {
                 text: "-";
+                primary: true;
+                clicked => {
+                    root.append("-");
+                }
             }
         }
 
@@ -60,33 +152,58 @@ export component AppWindow inherits Window {
             spacing: 10px;
             Button {
                 text: "1";
+                clicked => {
+                    root.append("1");
+                }
             }
 
             Button {
                 text: "2";
+                clicked => {
+                    root.append("2");
+                }
             }
 
             Button {
                 text: "3";
+                clicked => {
+                    root.append("3");
+                }
             }
 
             Button {
                 text: "+";
+                primary: true;
+                clicked => {
+                    root.append("+");
+                }
             }
         }
 
         HorizontalLayout {
             spacing: 10px;
+            
             Button {
                 text: "0";
+                clicked => {
+                    root.append("0");
+                }
             }
-
             Button {
                 text: "=";
+                primary: true;
                 clicked => {
-                    root.request-increase-value();
+                    root.calculate();
+                }
+            }
+            Button {
+                text: "/";
+                primary: true;
+                clicked => {
+                    root.append("/");
                 }
             }
         }
+
     }
 }
